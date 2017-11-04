@@ -27,3 +27,10 @@ class Place(models.Model):
 
     def __str__(this):
         return this.name
+
+class Facebook(models.Model):
+    name = models.CharField(max_length=100, primary_key=True)
+    url = models.CharField(max_length=255)
+
+    def __str__(this):
+        return this.name
