@@ -1,23 +1,12 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from events.models import Facebook
-import re
+from django.conf import settings
+
 
 class Command(BaseCommand):
-  help = "Does a thing"
+    help = "Does a thing"
 
-  # def add_arguments(self, parser):
-  #   # self.stdout("No arguments to")
-  #   parser.add_argument('our_arg', nargs='+', type=int)
-
-  def handle(self, *args, **options):
-    pattern = re.compile("https:\/\/(www\.)?facebook.com\/events\/\d{16}\/?")
-    self.stdout.write("Print me")
-    for facebook in Facebook.objects.values():
-      print(facebook['url'])
-      # url = facebook['url']
-      # if not pattern.match(url):
-      #   continue
-      # split_url = url.split("/")
-      # print(split_url[-2])
-
-
+    def handle(self, *args, **options):
+        # print(settings.FACEBOOK_TOKEN)
+        for facebook in Facebook.objects.values():
+            print(facebook)

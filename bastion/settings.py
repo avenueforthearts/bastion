@@ -133,3 +133,7 @@ STATICFILES_DIRS = [
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# Facebook token
+FACEBOOK_TOKEN = os.environ['FACEBOOK_TOKEN']
