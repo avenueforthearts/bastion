@@ -22,11 +22,35 @@ class Command(BaseCommand):
         return events['data']
 
     def process_event(self, event):
-        event_serializer = EventSerializer(data=event)
-        print("What is this")
+        parsed_event = self.create_event(event)
+        event_serializer = EventSerializer(data=parsed_event)
         if event_serializer.is_valid():
-            print(event)
-            new_event, created = Event.objects.update_or_create(**event)
+            print(parsed_event)
+            new_event, created = Event.objects.update_or_create(**parsed_event)
             if not created:
                 print("Dafaq")
 
+    def create_event(self, event):
+        parsed_event = {}
+        parsed_event['id'] = event.get('id')
+        parsed_event['event_name'] = event.get('name')
+        parsed_event['start_time'] = event.get('start_time')
+        parsed_event['end_time'] = event.get('end_time')
+        parsed_event['description'] = event.get('description', '')
+        parsed_event['place_name'] = self.safe_get(event, 'place', 'name')
+        parsed_event['street'] = self.safe_get(event, 'place', 'location', 'street')
+        parsed_event['city'] = self.safe_get(event, 'place', 'location', 'city')
+        parsed_event['state'] = self.safe_get(event, 'place', 'location', 'state')
+        parsed_event['country'] = self.safe_get(event, 'place', 'location', 'country')
+        parsed_event['latitude'] = self.safe_get(event, 'place', 'location', 'latitude')
+        parsed_event['longitude'] = self.safe_get(event, 'place', 'location', 'longitude')
+        parsed_event['zip'] = self.safe_get(event, 'place', 'location', 'zip')
+        return parsed_event
+
+    def safe_get(self, dct, *keys):
+        for key in keys:
+            try:
+                dct = dct[key]
+            except KeyError:
+                return ''
+        return dct
