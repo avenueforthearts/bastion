@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Event (models.Model):
+class Event(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     name = models.CharField(max_length=1000)
     description = models.TextField()

@@ -2,6 +2,7 @@ venv
 Lib
 Scripts
 *.pyc
-*sqlite3
+*.sqlite3
+*.json
 staticfiles
 .env
