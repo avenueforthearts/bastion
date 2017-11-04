@@ -6,3 +6,5 @@ Scripts
 *.json
 staticfiles
 .env
+pyvenv.cfg
+bin/
