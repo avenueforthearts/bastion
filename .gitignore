@@ -1,0 +1,7 @@
+venv
+Lib
+Scripts
+*.pyc
+*sqlite3
+staticfiles
+.env
