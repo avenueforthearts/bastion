@@ -32,6 +32,8 @@ class Event(models.Model):
     latitude = models.DecimalField(max_digits=25, decimal_places=20, blank=True, null=True)
     longitude = models.DecimalField(max_digits=25, decimal_places=20, blank=True, null=True)
 
+    hide = models.BooleanField(default=False)
+
     def __str__(this):
         return this.event_name
 
