@@ -7,6 +7,7 @@ import datetime
 import pytz
 
 
+
 class Command(BaseCommand):
     help = "Loops through defined facebook URLs and creates events/locations"
 
@@ -15,29 +16,31 @@ class Command(BaseCommand):
         graph = FacebookSDK.GraphAPI(access_token=token, version='2.7')
         for facebook in Facebook.objects.values():
             events = self.request_events(facebook['url'], graph)
+            print("Received " + str(len(events)) + " events from " + facebook['url'])
             for event in events:
                 self.process_event(event)
 
     def request_events(self, org_url, graph):
-        resp = graph.request(org_url)
-        print(resp)
-        id = resp['id']
-        since = int(datetime.datetime.now(pytz.utc).timestamp())
+        try:
+            resp = graph.request(org_url)
+            id = resp['id']
+            since = int(datetime.datetime.now(pytz.utc).timestamp())
 
-        url = id + '/events?type=created&since={0}'.format(since)
-        print('querying: {0}'.format(url))
-        events = graph.request(url)
-        print(events)
-        return events.get('data', [])
+            url = id + '/events?type=created&since={0}'.format(since)
+            print('Querying: {0}'.format(url))
+            events = graph.request(url)
+            return events.get('data', [])
+        except Exception as error:
+            print("Error: " + str(error))
+            return []
 
     def process_event(self, event):
         parsed_event = self.create_event(event)
         event_serializer = EventSerializer(data=parsed_event)
         if event_serializer.is_valid():
-            # print(parsed_event)
             new_event, created = Event.objects.update_or_create(**parsed_event)
             if not created:
-                print("Dafaq")
+                print("Event was not created: " + parsed_event.__str__)
 
     def create_event(self, event):
         parsed_event = {}
