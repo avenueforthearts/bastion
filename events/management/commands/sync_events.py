@@ -3,6 +3,9 @@ from events.models import Facebook, Event
 from django.conf import settings
 import facebook as FacebookSDK
 from events.serializers import EventSerializer
+import datetime
+import pytz
+
 
 class Command(BaseCommand):
     help = "Loops through defined facebook URLs and creates events/locations"
@@ -17,15 +20,21 @@ class Command(BaseCommand):
 
     def request_events(self, org_url, graph):
         resp = graph.request(org_url)
+        print(resp)
         id = resp['id']
-        events = graph.request(id + '/events?type=created')
-        return events['data']
+        since = int(datetime.datetime.now(pytz.utc).timestamp())
+
+        url = id + '/events?type=created&since={0}'.format(since)
+        print('querying: {0}'.format(url))
+        events = graph.request(url)
+        print(events)
+        return events.get('data', [])
 
     def process_event(self, event):
         parsed_event = self.create_event(event)
         event_serializer = EventSerializer(data=parsed_event)
         if event_serializer.is_valid():
-            print(parsed_event)
+            # print(parsed_event)
             new_event, created = Event.objects.update_or_create(**parsed_event)
             if not created:
                 print("Dafaq")
