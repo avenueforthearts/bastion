@@ -1,36 +1,51 @@
-# Heroku Django Starter Template
+# Bastion - Facebook Events gathering program
 
-An utterly fantastic project starter template for Django 1.11.
+The intention of this project was to design a simple way to allow a user to add Facebook user pages (like [Avenue for the Arts](https://www.facebook.com/avenuefortheartsgr/)) and be able to collect all upcoming events going on for that user.
+
+The general process is the user will input `Facebook` page data from the administrator page.  Every hour, Heroku will run the `python manage.py sync_events` to parse through the Facebook page data, grab all upcoming events from them, and then publish the events via JSON for the world to use.
+
 
 ## Features
 
-- Production-ready configuration for Static Files, Database Settings, Gunicorn, etc.
-- Enhancements to Django's static file serving functionality via WhiteNoise.
-- Latest Python 3.6 runtime environment. 
+- Simplifies/flattens Facebook events data in JSON format
+- Simple interface to add new Facebook pages
+- User/group administration
+- Automatically purges invalid Facebook pages. If a page does not provide the correct ID when requested, it will be purged!
+
+## Requirements
+
+- Python 3.6+
+- A Facebook Access Token
 
 ## How to Use
 
 To use this project, follow these steps:
 
-1. Create your working environment.
-2. Install Django (`$ pip install django`)
-3. Create a new project using this template
+1. `python3 -m venv .`
+2. `bin/pip3 install -r requirements.txt`
 
-## Creating Your Project
+Now you can use `bin/python manage.py` to see all the tasks you have available to run.  First things first, we need to setup your database.
 
-Using this template to create a new Django app is easy::
+1. `bin/python manage.py migrate`
+2. `bin/python manage.py createsuperuser`
+3. Set the environment variable `FACEBOOK_TOKEN` to your Facebook Access Token
 
-    $ django-admin.py startproject --template=https://github.com/heroku/heroku-django-template/archive/master.zip --name=Procfile helloworld
+With the database setup, we can now run the server.
+1. `bin/python manage.py runserver`
 
-(If this doesn't work on windows, replace `django-admin.py` with `django-admin`)
+You can now hit your host (if locally, localhost:8000/admin) and login with your super user account.  Then you can add Facebook organization objects in the UI.  An example would be:
+```
+Name: Avenue for the Arts
+URL: https://www.facebook.com/avenuefortheartsgr/
+```
 
-You can replace ``helloworld`` with your desired project name.
+You can trigger the Event Synchronization, which will populate the Events table, by using:
+1. `bin/python manage.py sync_events`
+
+To purge expired events, you can run:
+1. `bin/python manage.py purge_expired`
 
 ## Deployment to Heroku
-
-    $ git init
-    $ git add -A
-    $ git commit -m "Initial commit"
 
     $ heroku create
     $ git push heroku master
@@ -38,11 +53,6 @@ You can replace ``helloworld`` with your desired project name.
     $ heroku run python manage.py migrate
 
 See also, a [ready-made application](https://github.com/heroku/python-getting-started), ready to deploy.
-
-## Using Python 2.7?
-
-Just update `runtime.txt` to `python-2.7.13` (no trailing spaces or newlines!).
-
 
 ## License: MIT
 
