@@ -19,12 +19,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "*#p7ibe%iq&q*n+zi_9o5$o4du274qoqkz1rg$35l_d&ge7171"
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', False)
 
 # Application definition
 
@@ -116,8 +114,12 @@ DATABASES['default'].update(dj_database_url.config(conn_max_age=500))
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Allow all host headers
-ALLOWED_HOSTS = ['*']
+# We really should have multiple configs... but ehhh
+# https://twitter.com/sarah_edo/status/712482904090128387
+if (DEBUG):
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = ['avenue-for-the-arts-backend.herokuapp.com']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -137,3 +139,32 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Facebook token
 FACEBOOK_TOKEN = os.environ['FACEBOOK_TOKEN']
+
+
+# Some log kernoodeling
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
+                       'pathname=%(pathname)s lineno=%(lineno)s ' +
+                       'funcname=%(funcName)s %(message)s'),
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+}
