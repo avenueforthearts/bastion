@@ -1,11 +1,11 @@
 from django.core.management.base import BaseCommand
+
 from events.models import Facebook, Event
 from django.conf import settings
 import facebook as FacebookSDK
 from events.serializers import EventSerializer
 import datetime
 import pytz
-
 
 
 class Command(BaseCommand):
@@ -15,8 +15,9 @@ class Command(BaseCommand):
         token = settings.FACEBOOK_TOKEN
         graph = FacebookSDK.GraphAPI(access_token=token, version='2.7')
         for facebook in Facebook.objects.values():
-            events = self.request_events(facebook['url'], graph)
-            print("Received " + str(len(events)) + " events from " + facebook['url'])
+            url = facebook.get('url', '')
+            events = self.request_events(url, graph)
+            print("Received " + str(len(events)) + " events from " + url)
             for event in events:
                 self.process_event(event)
 
@@ -24,6 +25,7 @@ class Command(BaseCommand):
         try:
             resp = graph.request(org_url)
             id = resp['id']
+            int(id)  # Try to convert it to an int to verify it
             since = int(datetime.datetime.now(pytz.utc).timestamp())
 
             url = id + '/events?type=created&since={0}'.format(since)
@@ -31,8 +33,12 @@ class Command(BaseCommand):
             events = graph.request(url)
             return events.get('data', [])
         except Exception as error:
-            print("Error: " + str(error))
+            print("Error: " + str(error) + ". Removing bad URL")
+            self.remove_bad_url(org_url)
             return []
+
+    def remove_bad_url(self, url):
+        Facebook.objects.filter(url=url).delete()
 
     def process_event(self, event):
         parsed_event = self.create_event(event)

@@ -1,4 +1,15 @@
 from django.db import models
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
+import re as Regex
+
+
+def valid_facebook_url(url):
+    pattern = Regex.compile("https://www.facebook.com/\w+")
+    val = URLValidator(regex=pattern)
+    val(url)
+    if not pattern.match(url):
+        raise ValidationError
 
 
 class Event(models.Model):
@@ -23,7 +34,7 @@ class Event(models.Model):
 
 class Facebook(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
-    url = models.CharField(max_length=255)
+    url = models.CharField(max_length=255, validators=[valid_facebook_url])
 
     def __str__(this):
         return this.name
