@@ -27,8 +27,7 @@ class Command(BaseCommand):
             id = resp['id']
             int(id)  # Try to convert it to an int to verify it
             since = int(datetime.datetime.now(pytz.utc).timestamp())
-
-            url = id + '/events?type=created&since={0}'.format(since)
+            url = id + '/events?type=created&since={0}&fields={1}'.format(since, 'category,start_time,place,owner,description,name,end_time,ticket_uri,id,cover{source},event_times')
             print('Querying: {0}'.format(url))
             events = graph.request(url)
             return events.get('data', [])
@@ -44,9 +43,11 @@ class Command(BaseCommand):
         parsed_event = self.create_event(event)
         event_serializer = EventSerializer(data=parsed_event)
         if event_serializer.is_valid():
-            new_event, created = Event.objects.update_or_create(**parsed_event)
+            new_event, created = Event.objects.update_or_create(id=parsed_event['id'], defaults=parsed_event)
             if not created:
-                print("Event was not created: " + parsed_event.__str__)
+                print("Event was not created: " + str(parsed_event))
+        else:
+            print("Event was invalid: " + str(parsed_event))
 
     def create_event(self, event):
         parsed_event = {}
@@ -55,6 +56,10 @@ class Command(BaseCommand):
         parsed_event['start_time'] = event.get('start_time')
         parsed_event['end_time'] = event.get('end_time')
         parsed_event['description'] = event.get('description', '')
+        parsed_event['category'] = event.get('category', '')
+        parsed_event['owner'] = self.safe_get(event, 'owner', 'name')
+        parsed_event['ticket_uri'] = event.get('ticket_uri', '')
+        parsed_event['cover'] = self.safe_get(event, 'cover', 'source')
         parsed_event['place_name'] = self.safe_get(event, 'place', 'name')
         parsed_event['street'] = self.safe_get(event, 'place', 'location', 'street')
         parsed_event['city'] = self.safe_get(event, 'place', 'location', 'city')
@@ -63,6 +68,13 @@ class Command(BaseCommand):
         parsed_event['latitude'] = self.safe_get(event, 'place', 'location', 'latitude')
         parsed_event['longitude'] = self.safe_get(event, 'place', 'location', 'longitude')
         parsed_event['zip'] = self.safe_get(event, 'place', 'location', 'zip')
+
+        # even more hacks
+        if parsed_event['latitude'] == '':
+            parsed_event['latitude'] = None
+        if parsed_event['longitude'] == '':
+            parsed_event['longitude'] = None
+
         return parsed_event
 
     def safe_get(self, dct, *keys):

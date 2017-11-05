@@ -20,6 +20,10 @@ class Event(models.Model):
     end_time = models.DateTimeField()
 
     description = models.TextField(blank=True)
+    category = models.CharField(max_length=100, blank=True)
+    owner = models.CharField(max_length=1000, blank=True)
+    ticket_uri = models.CharField(max_length=1000, blank=True)
+    cover = models.CharField(max_length=1000, blank=True)
     street = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100, blank=True)
     state = models.CharField(max_length=100, blank=True)
