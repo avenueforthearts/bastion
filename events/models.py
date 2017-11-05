@@ -17,7 +17,7 @@ class Event(models.Model):
     event_name = models.CharField(max_length=1000)
     place_name = models.CharField(max_length=1000)
     start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    end_time = models.DateTimeField(blank=True, null=True)
 
     description = models.TextField(blank=True)
     category = models.CharField(max_length=100, blank=True)

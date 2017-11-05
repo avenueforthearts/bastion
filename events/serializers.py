@@ -7,7 +7,6 @@ class EventSerializer(serializers.Serializer):
     event_name = serializers.CharField(max_length=1000)
     place_name = serializers.CharField(max_length=1000)
     start_time = serializers.DateTimeField()
-    end_time = serializers.DateTimeField()
 
     def validate_id(self, value):
         return value
@@ -19,7 +18,4 @@ class EventSerializer(serializers.Serializer):
         return value
 
     def validate_start_time(self, value):
-        return value
-
-    def validate_end_time(self, value):
         return value
