@@ -116,7 +116,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # We really should have multiple configs... but ehhh
 # https://twitter.com/sarah_edo/status/712482904090128387
-if (DEBUG):
+if DEBUG:
     ALLOWED_HOSTS = ['*']
 else:
     ALLOWED_HOSTS = ['avenue-for-the-arts-backend.herokuapp.com']
