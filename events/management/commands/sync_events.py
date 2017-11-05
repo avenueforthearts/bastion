@@ -44,9 +44,8 @@ class Command(BaseCommand):
         event_serializer = EventSerializer(data=parsed_event)
         if event_serializer.is_valid():
             new_event, created = Event.objects.update_or_create(id=parsed_event['id'], defaults=parsed_event)
-            if not created:
-                print("Event was not created: " + str(parsed_event))
         else:
+            print(event_serializer.errors)
             print("Event was invalid: " + str(parsed_event))
 
     def create_event(self, event):

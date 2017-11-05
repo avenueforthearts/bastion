@@ -29,8 +29,8 @@ class Event(models.Model):
     state = models.CharField(max_length=100, blank=True)
     zip = models.CharField(max_length=10, blank=True)
     country = models.CharField(max_length=100, blank=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=25, decimal_places=20, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=25, decimal_places=20, blank=True, null=True)
 
     def __str__(this):
         return this.event_name
