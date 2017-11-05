@@ -8,11 +8,9 @@ The general process is the user will input `Facebook` page data from the adminis
 ## Features
 
 - Simplifies/flattens Facebook events data in JSON format
-- Hourly updates on all specified user/organization events
-- Simply interface to add new Facebook pages
+- Simple interface to add new Facebook pages
 - User/group administration
 - Automatically purges invalid Facebook pages. If a page does not provide the correct ID when requested, it will be purged!
-- Daily purging of expired events
 
 ## Requirements
 
@@ -35,7 +33,7 @@ Now you can use `bin/python manage.py` to see all the tasks you have available t
 With the database setup, we can now run the server.
 1. `bin/python manage.py runserver`
 
-You can now hit your host (if locally, localhost:8000) and login with your super user account.  Then you can add Facebook organization objects in the UI.  An example would be:
+You can now hit your host (if locally, localhost:8000/admin) and login with your super user account.  Then you can add Facebook organization objects in the UI.  An example would be:
 ```
 Name: Avenue for the Arts
 URL: https://www.facebook.com/avenuefortheartsgr/
@@ -48,10 +46,6 @@ To purge expired events, you can run:
 1. `bin/python manage.py purge_expired`
 
 ## Deployment to Heroku
-
-    $ git init
-    $ git add -A
-    $ git commit -m "Initial commit"
 
     $ heroku create
     $ git push heroku master
