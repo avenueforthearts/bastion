@@ -16,34 +16,40 @@ Users can input `Facebook` page urls from the django admin page.  Every hour, th
 - A Facebook Developer Access Token
 
 ## Develop!
+
     $ git clone https://github.com/avenueforthearts/bastion.git
     $ cd bastion
     $ python3 -m venv .
     $ bin/pip3 install -r requirements.txt
 
 `bin/python manage.py` to view available django management tasks.  First things first, setup your database!
-    $ bin/python manage.py migrate`
-    $ bin/python manage.py createsuperuser`
-    $ export FACEBOOK_TOKEN=[your real access token]`
-    $ export SECRET_TOKEN=$(python -c 'import random; print("".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))')`
-    $ export DEBUG=True`
 
-Run the server once the database is properly setup
-    $ bin/python manage.py runserver`
+    $ bin/python manage.py migrate
+    $ export FACEBOOK_TOKEN=[your real access token]
+    $ export SECRET_TOKEN=$(python -c 'import random; print("".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))')
+    $ export DEBUG=True
+    $ bin/python manage.py createsuperuser
 
-You can now login to the django backend (locally: localhost:8000/admin) and login with your super user account.  Then you can add Facebook organization objects in the UI.  An example would be:
+The server can be run once the database is properly setup
+
+    $ bin/python manage.py runserver
+
+[Login](http://localhost:8000/admin) to the django backend with a super user account and add Facebook organization objects.  Example:
 ```
 Name: Avenue for the Arts
 URL: https://www.facebook.com/avenuefortheartsgr/
 ```
 
-You can force Event Synchronization, which will populate the Events table, by using:
-    $ bin/python manage.py sync_events`
+Force Event Synchronization, which populates the Events table:
 
-To purge expired events, you can run:
+    $ bin/python manage.py sync_events
+
+Purge expired events:
+
     $ bin/python manage.py purge_expired
 
 ## Deployment to Heroku
+
     $ heroku create
     $ git push heroku master
     $ heroku run python manage.py migrate
@@ -51,6 +57,7 @@ To purge expired events, you can run:
 ## License: MIT
 
 ## Further Reading
+
 - [Template Heroku Project](https://github.com/heroku/heroku-django-template) (Thank you!)
 - [Gunicorn](https://warehouse.python.org/project/gunicorn/)
 - [WhiteNoise](https://warehouse.python.org/project/whitenoise/)
