@@ -3,7 +3,7 @@ chardet==3.0.4
 dj-database-url==0.4.2
 Django==1.11.7
 django-cache-headers==0.3.1
-djangorestframework==3.7.1
+djangorestframework==3.11.2
 facebook-sdk==2.0.0
 gunicorn==19.7.1
 idna==2.6
